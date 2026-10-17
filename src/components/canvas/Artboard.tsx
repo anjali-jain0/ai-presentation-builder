@@ -7,6 +7,7 @@ import { snapBox, Guides, GRID_SIZE, clampGroupOffset, findGroupDropPosition } f
 import { clampBox } from "@/lib/elementFactory";
 import { backgroundStyle } from "@/lib/background";
 import { findSlideAtPoint } from "@/lib/dragRegistry";
+import { flushEditingElement } from "@/lib/flushEdit";
 import ElementContent from "./ElementContent";
 import SelectionOverlay, { HandlePos } from "./SelectionOverlay";
 
@@ -101,6 +102,7 @@ export default function Artboard({ slide }: { slide: Slide }) {
       next = [el.id];
     }
     selectElements(next, slide.id);
+    flushEditingElement();
     setEditingElementId(null);
 
     const startBoxes: Record<string, BoundingBox> = {};
@@ -132,6 +134,7 @@ export default function Artboard({ slide }: { slide: Slide }) {
 
   const onCanvasPointerDown = (e: React.PointerEvent) => {
     if (e.target !== e.currentTarget) return;
+    flushEditingElement();
     setEditingElementId(null);
     if (!e.shiftKey) clearSelection();
     const pt = toArtboardPoint(e.clientX, e.clientY);

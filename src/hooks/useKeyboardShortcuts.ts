@@ -5,6 +5,7 @@ import { DeckOp } from "@/store/ops";
 import { GRID_SIZE, clampGroupOffset } from "@/lib/snap";
 import { clampBox } from "@/lib/elementFactory";
 import { setClipboard, getClipboard, hasClipboard } from "@/lib/clipboard";
+import { flushEditingElement } from "@/lib/flushEdit";
 import { useCanvasActions } from "./useCanvasActions";
 
 function isEditableTarget(target: EventTarget | null) {
@@ -33,6 +34,22 @@ export function useKeyboardShortcuts() {
         e.preventDefault();
         redo();
         return;
+      }
+
+      if (meta && (e.key.toLowerCase() === "c" || e.key.toLowerCase() === "x")) {
+        const { editingElementId } = useDeckStore.getState();
+        if (editingElementId) {
+          flushEditingElement();
+          const fresh = useDeckStore.getState();
+          const slide = fresh.deck.slides.find((s) => s.id === fresh.selection.slideId);
+          const toCopy = slide?.elements.filter((el) => fresh.selection.elementIds.includes(el.id)) ?? [];
+          if (toCopy.length > 0) {
+            e.preventDefault();
+            setClipboard(toCopy);
+            if (e.key.toLowerCase() === "x") deleteSelected();
+          }
+          return;
+        }
       }
 
       if (isEditableTarget(document.activeElement)) return;

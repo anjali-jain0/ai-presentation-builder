@@ -42,7 +42,11 @@ export default function TextElementView({ element, editing, onCommitText }: Prop
           cursor: "text",
         }}
         onPointerDown={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
+        onKeyDown={(e) => {
+          const meta = e.metaKey || e.ctrlKey;
+          if (meta && (e.key.toLowerCase() === "c" || e.key.toLowerCase() === "x")) return;
+          e.stopPropagation();
+        }}
         // contentEditable turns some spaces into NBSP (U+00A0); normalize back on commit
         onBlur={(e) => onCommitText(e.currentTarget.innerText.replace(/\u00A0/g, " "))}
       >

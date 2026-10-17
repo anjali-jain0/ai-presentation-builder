@@ -17,6 +17,8 @@ export default function TableElementView({ element, editing, onCommitCell }: Pro
               return (
                 <td
                   key={colIdx}
+                  data-row={rowIdx}
+                  data-col={colIdx}
                   contentEditable={editing}
                   suppressContentEditableWarning
                   onPointerDown={(e) => editing && e.stopPropagation()}
