@@ -15,9 +15,10 @@ import {
   UndoIcon,
   RedoIcon,
   ExportIcon,
+  PresentIcon,
 } from "./icons";
 
-export default function Toolbar({ onExport }: { onExport: () => void }) {
+export default function Toolbar({ onExport, onPresent }: { onExport: () => void; onPresent: () => void }) {
   const deck = useDeckStore((s) => s.deck);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
   const selection = useDeckStore((s) => s.selection);
@@ -110,6 +111,7 @@ export default function Toolbar({ onExport }: { onExport: () => void }) {
       </ToolbarGroup>
 
       <div className="flex-1" />
+      <ToolbarButton label="Present" icon={<PresentIcon />} onClick={onPresent} disabled={deck.slides.length === 0} />
       <ToolbarButton label="Print" icon={<ExportIcon />} onClick={onExport} />
       <ToolbarButton
         label={isExportingPdf ? "Exporting…" : "Download PDF"}
@@ -154,7 +156,7 @@ function ToolbarButton({
       onClick={onClick}
       disabled={disabled}
       title={title ?? label}
-      className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-40 ${
+      className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-40 ${
         primary ? "bg-indigo-600 text-white hover:bg-indigo-700" : "text-slate-600 hover:bg-slate-100"
       }`}
     >

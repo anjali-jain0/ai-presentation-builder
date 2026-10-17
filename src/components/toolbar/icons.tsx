@@ -115,3 +115,13 @@ export function ExportIcon(p: IconProps) {
     </svg>
   );
 }
+
+export function PresentIcon(p: IconProps) {
+  return (
+    <svg {...base} strokeLinecap="round" strokeLinejoin="round" className={p.className}>
+      <rect x="3" y="4" width="18" height="12" rx="2" />
+      <path d="M8 21h8M12 16v5" />
+      <path d="M10 8l5 2.5-5 2.5V8z" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}

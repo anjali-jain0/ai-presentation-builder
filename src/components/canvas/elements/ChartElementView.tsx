@@ -14,6 +14,7 @@ import {
   Tooltip,
   Legend,
   CartesianGrid,
+  LabelList,
 } from "recharts";
 import { ChartElement } from "@/types/deck";
 import { toPieData, toRowData } from "@/lib/chartData";
@@ -39,7 +40,9 @@ export default function ChartElementView({ element }: { element: ChartElement })
               <Tooltip cursor={false} />
               {chart.showLegend && <Legend wrapperStyle={{ fontSize: 10 }} />}
               {chart.series.map((s, i) => (
-                <Bar key={s.name} dataKey={s.name} fill={colors[i % colors.length]} />
+                <Bar key={s.name} dataKey={s.name} fill={colors[i % colors.length]}>
+                  {chart.showDataLabels && <LabelList dataKey={s.name} position="top" fontSize={10} />}
+                </Bar>
               ))}
             </BarChart>
           ) : chart.chartType === "line" ? (
@@ -50,7 +53,9 @@ export default function ChartElementView({ element }: { element: ChartElement })
               <Tooltip cursor={false} />
               {chart.showLegend && <Legend wrapperStyle={{ fontSize: 10 }} />}
               {chart.series.map((s, i) => (
-                <Line key={s.name} type="monotone" dataKey={s.name} stroke={colors[i % colors.length]} strokeWidth={2} />
+                <Line key={s.name} type="monotone" dataKey={s.name} stroke={colors[i % colors.length]} strokeWidth={2}>
+                  {chart.showDataLabels && <LabelList dataKey={s.name} position="top" fontSize={10} />}
+                </Line>
               ))}
             </LineChart>
           ) : chart.chartType === "area" ? (
@@ -68,7 +73,9 @@ export default function ChartElementView({ element }: { element: ChartElement })
                   stroke={colors[i % colors.length]}
                   fill={colors[i % colors.length]}
                   fillOpacity={0.35}
-                />
+                >
+                  {chart.showDataLabels && <LabelList dataKey={s.name} position="top" fontSize={10} />}
+                </Area>
               ))}
             </AreaChart>
           ) : (

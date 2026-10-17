@@ -60,9 +60,8 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// hosts like Render/Railway assign a port via PORT and route traffic there, so
-// production has to respect it. Local dev avoids PORT on purpose (reserved for
-// Vite's dev server, running alongside this one) and uses API_PORT instead.
+// Render/Railway etc assign the port via PORT, so prod needs to respect it.
+// local dev still avoids PORT (that's Vite's) and falls back to API_PORT
 const PORT = process.env.PORT ? Number(process.env.PORT) : process.env.API_PORT ? Number(process.env.API_PORT) : 8787;
 app.listen(PORT, () => {
   console.log(`[server] listening on http://localhost:${PORT}`);

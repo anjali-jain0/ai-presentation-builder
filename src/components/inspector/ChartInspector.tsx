@@ -146,6 +146,14 @@ export default function ChartInspector({ slideId, element }: { slideId: string; 
         <input type="checkbox" checked={chart.showLegend ?? true} onChange={(e) => patchChart({ showLegend: e.target.checked })} />
         Show legend
       </label>
+      <label className="flex items-center gap-2 text-xs text-slate-600">
+        <input
+          type="checkbox"
+          checked={chart.showDataLabels ?? false}
+          onChange={(e) => patchChart({ showDataLabels: e.target.checked })}
+        />
+        Show data labels
+      </label>
     </div>
   );
 }

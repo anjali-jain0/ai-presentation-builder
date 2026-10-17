@@ -7,6 +7,7 @@ import Artboard from "@/components/canvas/Artboard";
 import Inspector from "@/components/inspector/Inspector";
 import ChatPanel from "@/components/chat/ChatPanel";
 import PrintView from "@/components/export/PrintView";
+import PresentMode from "@/components/present/PresentMode";
 
 type RightTab = "chat" | "inspector";
 
@@ -17,6 +18,7 @@ export default function App() {
   const selection = useDeckStore((s) => s.selection);
   const [rightTab, setRightTab] = useState<RightTab>("chat");
   const [rightCollapsed, setRightCollapsed] = useState(false); // resets on reload, doesn't persist
+  const [presenting, setPresenting] = useState(false);
 
   const slide = deck.slides.find((s) => s.id === selection.slideId);
 
@@ -25,10 +27,14 @@ export default function App() {
     window.print();
   };
 
+  if (presenting) {
+    return <PresentMode deck={deck} startSlideId={selection.slideId} onExit={() => setPresenting(false)} />;
+  }
+
   return (
     <>
       <div className="flex h-screen flex-col bg-slate-100 print:hidden">
-        <Toolbar onExport={onExport} />
+        <Toolbar onExport={onExport} onPresent={() => setPresenting(true)} />
         <div className="flex min-h-0 flex-1">
           <Filmstrip />
 
@@ -40,38 +46,57 @@ export default function App() {
             ) : (
               <p className="text-sm text-slate-400">Select a slide to start editing.</p>
             )}
-
-            <button
-              onClick={() => setRightCollapsed((v) => !v)}
-              title={rightCollapsed ? "Expand panel" : "Collapse panel"}
-              className="absolute right-0 top-1/2 z-10 flex h-7 w-[18px] -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 shadow-sm transition-colors hover:bg-slate-50"
-            >
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.3} strokeLinecap="round" strokeLinejoin="round">
-                {rightCollapsed ? <path d="M9 6l6 6-6 6" /> : <path d="M15 6l-6 6 6 6" />}
-              </svg>
-            </button>
           </main>
 
           <div
             className={`flex flex-col overflow-hidden bg-white transition-all duration-200 ${
-              rightCollapsed ? "w-0" : "w-[300px] border-l border-slate-200"
+              rightCollapsed ? "w-7 border-l border-slate-200" : "w-[300px] border-l border-slate-200"
             }`}
           >
-            <div className="relative flex w-[300px] border-b border-slate-200">
-              <TabButton label="AI Chat" active={rightTab === "chat"} onClick={() => setRightTab("chat")} />
-              <TabButton label="Inspector" active={rightTab === "inspector"} onClick={() => setRightTab("inspector")} />
-              <div
-                className="absolute bottom-[-1px] h-0.5 w-1/2 rounded-full bg-indigo-500 transition-transform duration-200 ease-out"
-                style={{ transform: rightTab === "inspector" ? "translateX(100%)" : "translateX(0%)" }}
-              />
-            </div>
-            <div className="min-h-0 w-[300px] flex-1">{rightTab === "chat" ? <ChatPanel /> : <InspectorInline />}</div>
+            {rightCollapsed ? (
+              <button
+                onClick={() => setRightCollapsed(false)}
+                title="Expand panel"
+                className="flex h-7 w-7 shrink-0 items-center justify-center bg-indigo-50 text-indigo-600 transition-colors hover:bg-indigo-100"
+              >
+                <ChevronIcon direction="left" />
+              </button>
+            ) : (
+              <>
+                <div className="flex w-[300px] shrink-0 items-stretch border-b border-slate-200">
+                  <div className="relative flex flex-1">
+                    <TabButton label="AI Chat" active={rightTab === "chat"} onClick={() => setRightTab("chat")} />
+                    <TabButton label="Inspector" active={rightTab === "inspector"} onClick={() => setRightTab("inspector")} />
+                    <div
+                      className="absolute bottom-[-1px] h-0.5 w-1/2 rounded-full bg-indigo-500 transition-transform duration-200 ease-out"
+                      style={{ transform: rightTab === "inspector" ? "translateX(100%)" : "translateX(0%)" }}
+                    />
+                  </div>
+                  <button
+                    onClick={() => setRightCollapsed(true)}
+                    title="Collapse panel"
+                    className="flex w-7 shrink-0 items-center justify-center border-l border-slate-200 bg-indigo-50 text-indigo-600 transition-colors hover:bg-indigo-100"
+                  >
+                    <ChevronIcon direction="right" />
+                  </button>
+                </div>
+                <div className="min-h-0 w-[300px] flex-1">{rightTab === "chat" ? <ChatPanel /> : <InspectorInline />}</div>
+              </>
+            )}
           </div>
         </div>
       </div>
 
       <PrintView deck={deck} />
     </>
+  );
+}
+
+function ChevronIcon({ direction }: { direction: "left" | "right" }) {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.3} strokeLinecap="round" strokeLinejoin="round">
+      {direction === "left" ? <path d="M15 6l-6 6 6 6" /> : <path d="M9 6l6 6-6 6" />}
+    </svg>
   );
 }
 
