@@ -163,4 +163,8 @@ The whole deck is serialized to `localStorage` on every mutation and restored on
 
 ## Deployment
 
-Not deployed yet. Local setup above is the only way to run it right now — a live URL will be added here once it's up.
+**Live:** https://ai-presentation-builder-97ol.onrender.com/
+
+Deployed on Render, from the `render.yaml` blueprint in this repo (build: `npm install --include=dev && npm run build`, start: `npm start`). `GEMINI_API_KEY` is set directly in Render's dashboard, never committed — see `.gitignore` / `.env.example`.
+
+Runs on Render's free tier, which spins the service down after ~15 minutes of inactivity. The first request after that takes 30-60s to wake back up; subsequent requests are fast. That's expected behavior, not a bug.
