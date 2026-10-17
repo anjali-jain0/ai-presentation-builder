@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.2s ease-out;
+}
+
+/* 13.333in x 7.5in = 1280x720 CSS px at the spec'd 96px/inch, i.e. exactly
+   ARTBOARD_WIDTH x ARTBOARD_HEIGHT -- see PrintView.tsx. */
+@media print {
+  @page {
+    size: 13.333in 7.5in;
+    margin: 0;
+  }
+  body {
+    margin: 0;
+  }
+  /* Browsers suppress CSS background-color/background-image by default when
+     printing, to save ink -- without this, shape fills, slide background
+     colors, and table header shading all silently disappear in the printed
+     output even though they render correctly on screen. This forces exact
+     color reproduction for every element in the print view. */
+  * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
